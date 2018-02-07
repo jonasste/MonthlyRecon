@@ -1,6 +1,7 @@
 # Constructor
 class InternationalCaseObject:    
-    PVpath = "C:/Users/Jonasste/Desktop/Case 2521 CIOMS_GB-CURIUM-201800002 (1).pdf"
+    PathFile = open('./Paths.txt')
+    PVpath = PathFile.read()
     Text = None
     # Local Case Y/N
     LocalCase = None
@@ -20,9 +21,11 @@ class InternationalCaseObject:
     # Serious Y/N: Find serious / non-serious
     Seriousness = None
     # Expected E/U: Find EXPECTEDNESS
+    Expectedness = None
     # Reported to local authority Y/N/[NA] 
     # Reported on time  [empty]
     # Comments: Offlabel-use. / No need for reporting if benefit-risk-ratio has not changed.
+    Comment = None
     
     def __init__(self):
         self.ReadPdf()
@@ -36,9 +39,13 @@ class InternationalCaseObject:
         # Date Sent to Global PV: DATE OF THIS REPORT
         self.ReadPars("DateSentToGlobal","DATE OF THIS REPORT","24d. REPORT SOURCE","([0-9]+-\w+-[0-9]+)") # Before, After, Pattern, Choices = None
         #ProductName
-        self.ReadPars("ProductName","14. SUSPECT DRUG","15. 15. DAILY DOSE","(.*?)") # Before, After, Pattern, Choices = None
+        self.ReadPars("ProductName","14. SUSPECT DRUG","15. DAILY DOSE","(#[0-9].*)") # Before, After, Pattern, Choices = None
         # Serious Y/N: Find serious / non-serious
-        self.ReadPars("Seriousness","","","(.*?)") # Before, After, Pattern, Choices = None
+        self.ReadPars("Seriousness","ADDITIONAL INFORMATION","TCPDF","(.*?)") # Before, After, Pattern, Choices = None
+        # Expected E/U: Find EXPECTEDNESS
+        self.ReadPars("Expectedness","ADDITIONAL INFORMATION","TCPDF","(.*?)") # Before, After, Pattern, Choices = None
+        # Comments: Offlabel-use. / No need for reporting if benefit-risk-ratio has not changed.
+        self.ReadPars("Comment","ADDITIONAL INFORMATION","TCPDF","(.*?)") # Before, After, Pattern, Choices = None
         self.FindLatestMail()
         self.WriteToXls()
         self.MoveToFolder()
@@ -92,16 +99,40 @@ class InternationalCaseObject:
             ParString = (CountryObjct.name)
         elif Par == "ProductName":
             product_list = []
-            List_file = open('C:/Users/Jonasste/Dropbox/Product_list.txt')
+            List_file = open('./Product_list.txt')
             product_list = List_file.read().splitlines()
             # create product dictionary: {unique search-term}{Name for File}
         elif Par == "Seriousness":
-            print("test...")
-            # find non-serious or serious
-            # Set ParString to Y / N
-        
-            
-            
+            print("Checking for seriousness...")
+            if "non-serious" in Substring:
+                print("non-serious")
+                ParString = "N"
+            elif "serious" in Substring:
+                print("serious")
+                ParString = "Y"
+            else:
+                print("nothing")
+                ParString = None
+        elif Par == "Expectedness":
+            print("Checking for expectedness...")
+            if "listed" in Substring:
+                print("listed")
+                ParString = "Y"
+            elif "unlisted" in Substring:
+                print("unlisted")
+                ParString = "N"
+            else:
+                print("nothing")
+                ParString = None
+        elif Par == "Comment":
+            print("Checking for Off-label use...")
+            if "off-label" in Substring:
+                print("Off-label use")
+                ParString = "Offlabel-use. No need for reporting if benefit-risk-ratio has not changed."
+            else:
+                print("No off-label use")
+                ParString = "No need for reporting if benefit-risk-ratio has not changed."
+                
         exec("self." + Par + "= ParString")
         
     def FindLatestMail(self):
@@ -109,8 +140,13 @@ class InternationalCaseObject:
         # Get Date from Outlook
     
     def WriteToXls(self):
-        print("write stuf...")
-        # Enter to corresponding sheet
+        import xlsxwriter
+        print("write stuf to xlsx file...")
+        # does sheet for actual month exist?
+            # if not create it
+            # if exist fill columns
+                # NUC
+                # Synacthen
         
     def CheckFolder(self): # check if folder exists, if not create one
        file_path = str('C:/Users/jonas/OneDrive/PV/CIOMS/Sorted CIOMS/' + folder)
@@ -164,11 +200,11 @@ class InternationalCaseObject:
 
 # import pycountry
 x = InternationalCaseObject()
-print(x.Text)
-# print(x.Country)
+# print(x.Text)
+print(x.Seriousness)
 # print(x.ReceiptDate)
 # print(x.DateSentToGlobal)
 # print(type(x.ProductName))
-# print(x.ProductName)
+print(x.ProductName)
 
 
