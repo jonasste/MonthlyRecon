@@ -37,6 +37,8 @@ class InternationalCaseObject:
         self.ReadPars("DateSentToGlobal","DATE OF THIS REPORT","24d. REPORT SOURCE","([0-9]+-\w+-[0-9]+)") # Before, After, Pattern, Choices = None
         #ProductName
         self.ReadPars("ProductName","14. SUSPECT DRUG","15. 15. DAILY DOSE","(.*?)") # Before, After, Pattern, Choices = None
+        # Serious Y/N: Find serious / non-serious
+        self.ReadPars("Seriousness","","","(.*?)") # Before, After, Pattern, Choices = None
         self.FindLatestMail()
         self.WriteToXls()
         self.MoveToFolder()
@@ -93,6 +95,10 @@ class InternationalCaseObject:
             List_file = open('C:/Users/Jonasste/Dropbox/Product_list.txt')
             product_list = List_file.read().splitlines()
             # create product dictionary: {unique search-term}{Name for File}
+        elif Par == "Seriousness":
+            # find non-serious or serious
+            # Set ParString to Y / N
+        
             
             
         exec("self." + Par + "= ParString")
