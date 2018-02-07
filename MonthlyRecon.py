@@ -96,6 +96,7 @@ class InternationalCaseObject:
             product_list = List_file.read().splitlines()
             # create product dictionary: {unique search-term}{Name for File}
         elif Par == "Seriousness":
+            print("test...")
             # find non-serious or serious
             # Set ParString to Y / N
         
