@@ -4,9 +4,9 @@ class InternationalCaseObject:
     PVpath = PathFile.read()
     Text = None
     # Local Case Y/N
-    LocalCase = None
+    LocalCase = "No"
     # Local Case Number
-    LocalCaseNo = None
+    LocalCaseNo = "NA"
     # Global Case Number: 24b. MFR CONTROL NO.
     GlobalCaseNo = None        
     # Country: 1a. COUNTRY
@@ -141,13 +141,19 @@ class InternationalCaseObject:
     
     def WriteToXls(self):
         import openpyxl
+        import datetime
         print("write stuf to xlsx file...")
-        xfile = openpyxl.load_workbook("C:/Users/jonas/Dropbox/Monthly Recon/201801_CH_PV_Nuc.xlsx")
-        sheet = xfile.get_sheet_by_name('Switzerland')
+        xfile = openpyxl.load_workbook("./201801_CH_PV_Nuc.xlsx")
+        sheet = xfile['Switzerland']
+        #find latest Row
         row = sheet.max_row + 1
-        sheet.cell(row = row, column = 1, value = "test")
-        
-        xfile.save("C:/Users/jonas/Dropbox/Monthly Recon/201801_CH_PV_Nuc.xlsx")
+        # Reihenfolge: 1) LocalCaseY/N  2) Local CaseNo 3) Global CaseNo 4) Country 5) ProductName 6)InitialDate 7)DateToGlobal 8)ReceiptDate 9)Serious 10)Listed 11)RepToLocA 12) Date 13) RepOnTime 14)Comments
+        for ColInd,ColVal in enumerate([self.LocalCase,self.LocalCaseNo,self.GlobalCaseNo,self.Country,self.ProductName,self.ReceiptDate,self.DateSentToGlobal,datetime.date.today(),self.Seriousness,self.Expectedness,"NA",None,"NA","NA","NA",self.Comment]):
+            try:
+                sheet.cell(row = row, column = ColInd+1, value = ColVal)
+            except:
+                print('Error in: ' + str(ColInd) + ' Val ' + ColVal)
+        xfile.save("./201801_CH_PV_Nuc.xlsx")
         print("...xslx filled out")
         # does sheet for actual month exist?
             # if not create it
@@ -208,10 +214,10 @@ class InternationalCaseObject:
 # import pycountry
 x = InternationalCaseObject()
 # print(x.Text)
-print(x.Seriousness)
+# print(x.Seriousness)
 # print(x.ReceiptDate)
 # print(x.DateSentToGlobal)
 # print(type(x.ProductName))
-print(x.ProductName)
+# print(x.ProductName)
 
 
