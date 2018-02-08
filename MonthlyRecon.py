@@ -140,8 +140,15 @@ class InternationalCaseObject:
         # Get Date from Outlook
     
     def WriteToXls(self):
-        import xlsxwriter
+        import openpyxl
         print("write stuf to xlsx file...")
+        xfile = openpyxl.load_workbook("C:/Users/jonas/Dropbox/Monthly Recon/201801_CH_PV_Nuc.xlsx")
+        sheet = xfile.get_sheet_by_name('Switzerland')
+        row = sheet.max_row + 1
+        sheet.cell(row = row, column = 1, value = "test")
+        
+        xfile.save("C:/Users/jonas/Dropbox/Monthly Recon/201801_CH_PV_Nuc.xlsx")
+        print("...xslx filled out")
         # does sheet for actual month exist?
             # if not create it
             # if exist fill columns
